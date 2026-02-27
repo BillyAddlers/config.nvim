@@ -57,6 +57,7 @@ External Requirements:
   - etc.
 - [Silicon](https://github.com/Aloxaf/silicon) to generate a beautiful image of your code. Go to `nvim-silicon` using find feature and change the configuration accordingly! (NOTE: It contains my personal font and watermark, so don't forget to change!)
   - `cargo install silicon`
+> **NOTE** > For Arch/Cachy, just install from pacman with `sudo pacman -S silicon`
 
 > **NOTE**
 > See [Install Recipes](#Install-Recipes) for additional Windows and Linux specific notes
