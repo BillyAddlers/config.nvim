@@ -107,6 +107,10 @@ vim.g.go_auto_type_info = 1
 -- Using 'conform' for autoformatting code.
 -- vim.cmd [[autocmd BufWritePre *.go,*.ts,*.tsx lua vim.lsp.buf.format({async = true})]]
 
+-- Disable border highlights background for Neotree
+vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE' })
+vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE' })
+
 -- [[ Setting options ]]
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
@@ -541,7 +545,9 @@ require('lazy').setup({
         },
         options = {
           icons_enabled = true,
-          theme = 'catppuccin', -- was 'horizon' before
+          theme = 'auto',
+          -- theme = 'thorn',
+          -- theme = 'catppuccin', -- was 'horizon' before
         },
         extensions = {
           'nvim-tree',
@@ -2138,6 +2144,79 @@ require('lazy').setup({
     end,
   },
 
+  -- Integration with Noctalia
+  {
+    'RRethy/base16-nvim',
+    lazy = false,
+    priority = 1000,
+    enabled = true,
+    config = function()
+      require('matugen').setup()
+    end,
+  },
+  -- Compatibility with transparent background
+  {
+    'xiyaowong/transparent.nvim',
+    lazy = false,
+    config = function()
+      -- Optional, you don't have to run setup.
+      require('transparent').setup {
+        -- table: default groups
+        groups = {
+          'Normal',
+          'NormalNC',
+          'Comment',
+          'Constant',
+          'Special',
+          'Identifier',
+          'Statement',
+          'PreProc',
+          'Type',
+          'Underlined',
+          'Todo',
+          'String',
+          'Function',
+          'Conditional',
+          'Repeat',
+          'Operator',
+          'Structure',
+          'LineNr',
+          'NonText',
+          'SignColumn',
+          'CursorLine',
+          'CursorLineNr',
+          'StatusLine',
+          'StatusLineNC',
+          'EndOfBuffer',
+        },
+        -- table: additional groups that should be cleared
+        extra_groups = {},
+        -- table: groups you don't want to clear
+        exclude_groups = {},
+        -- function: code to be executed after highlight groups are cleared
+        -- Also the user event "TransparentClear" will be triggered
+        on_clear = function() end,
+      }
+    end,
+  },
+
+  -- Different theme testing
+  {
+    'jpwol/thorn.nvim',
+    lazy = false,
+    priority = 1000,
+    enabled = false,
+    opts = {
+      theme = nil, -- 'light' or 'dark' - defaults to vim.o.background if unset
+
+      transparent = true, -- transparent background
+      terminal = true, -- terminal colors
+    },
+    init = function()
+      -- Init this command to apply colorscheme
+      vim.cmd [[colorscheme thorn]]
+    end,
+  },
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -2145,7 +2224,9 @@ require('lazy').setup({
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     -- 'folke/tokyonight.nvim',
     'catppuccin/nvim',
+    lazy = false,
     priority = 1000, -- Make sure to load this before all the other start plugins.
+    enabled = false,
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
@@ -2155,8 +2236,6 @@ require('lazy').setup({
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
-      vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE' })
-      vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE' })
     end,
     config = function()
       -- You can configure the colorscheme here.
