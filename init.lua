@@ -108,8 +108,9 @@ vim.g.go_auto_type_info = 1
 -- vim.cmd [[autocmd BufWritePre *.go,*.ts,*.tsx lua vim.lsp.buf.format({async = true})]]
 
 -- Disable border highlights background for Neotree
-vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE' })
-vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE' })
+-- Force floating windows to have a transparent background
+vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE', ctermbg = 'NONE' })
+vim.api.nvim_set_hl(0, 'FloatBorder', { bg = 'NONE', ctermbg = 'NONE' })
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -1244,9 +1245,14 @@ require('lazy').setup({
   -- ThePrimeagen makes something good other than Harpoon2.
   {
     'ThePrimeagen/refactoring.nvim',
-    requires = {
-      'nvim-lua/plenary.nvim',
-      'nvim-treesitter/nvim-treesitter',
+    lazy = false,
+    dependencies = {
+      --  It seems refactoring.nvim has less dependencies now.
+      --  Disabling those.
+      --
+      --  'nvim-lua/plenary.nvim',
+      --  'nvim-treesitter/nvim-treesitter',
+      'lewis6991/async.nvim',
     },
     config = function()
       require('refactoring').setup {
@@ -1433,7 +1439,8 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'ui-select')
       pcall(require('telescope').load_extension, 'harpoon')
       pcall(require('telescope').load_extension 'notify')
-      pcall(require('telescope').load_extension 'refactoring')
+      -- Disabled for now
+      -- pcall(require('telescope').load_extension 'refactoring')
       pcall(require('telescope').load_extension 'aerial')
 
       -- See `:help telescope.builtin`
@@ -2158,6 +2165,7 @@ require('lazy').setup({
   {
     'xiyaowong/transparent.nvim',
     lazy = false,
+    enabled = false,
     config = function()
       -- Optional, you don't have to run setup.
       require('transparent').setup {
@@ -2188,6 +2196,9 @@ require('lazy').setup({
           'StatusLine',
           'StatusLineNC',
           'EndOfBuffer',
+          'NeoTreeFloatBorder',
+          'NeoTreeFloatTitle',
+          'NeoTreeFloatNormal',
         },
         -- table: additional groups that should be cleared
         extra_groups = {},
