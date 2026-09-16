@@ -1068,30 +1068,28 @@ require('lazy').setup({
         },
       }
 
-      -- Handling LSP errors only when using `Insert` mode.
-      vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+      -- Handle LSP diagnostics display.
+      vim.diagnostic.config {
         underline = true,
         virtual_text = {
           spacing = 5,
-          min = {
-            severity = 'warnings',
-          },
+          severity = { min = vim.diagnostic.severity.WARN },
         },
         update_in_insert = true,
-      })
+      }
     end,
   },
 
   -- NOTE: Markdown Preview Plugin
   -- This plugin allows you to preview markdown files in your browser.
   {
-    'iamcco/markdown-preview.nvim',
-    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-    build = 'cd app && npm install',
-    init = function()
-      vim.g.mkdp_filetypes = { 'markdown' }
-    end,
-    ft = { 'markdown' },
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.nvim' }, -- if you use the mini.nvim suite
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-mini/mini.icons' },        -- if you use standalone mini plugins
+    -- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {},
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
