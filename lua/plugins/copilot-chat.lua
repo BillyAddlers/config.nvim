@@ -1,6 +1,5 @@
 return {
   'CopilotC-Nvim/CopilotChat.nvim', -- Copilot Chat
-  enabled = false,
   branch = 'canary',
   init = function()
     local copilot = require 'CopilotChat'

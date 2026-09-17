@@ -1,8 +1,11 @@
 -- Compatibility with transparent background
+--
+-- NOTE: Disabled by default. Its import is commented out in `init.lua`.
+--       Uncomment `{ import = 'plugins.transparent' }` there (and `:Lazy install`)
+--       to use it.
 return {
   'xiyaowong/transparent.nvim',
   lazy = false,
-  enabled = false,
   config = function()
     -- Optional, you don't have to run setup.
     require('transparent').setup {

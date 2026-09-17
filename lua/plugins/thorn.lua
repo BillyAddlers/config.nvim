@@ -3,7 +3,6 @@ return {
   'jpwol/thorn.nvim',
   lazy = false,
   priority = 1000,
-  enabled = false,
   opts = {
     theme = nil, -- 'light' or 'dark' - defaults to vim.o.background if unset
 

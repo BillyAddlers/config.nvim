@@ -6,43 +6,35 @@
 -- It's a powerful tool that can help you find and fix bugs in your code.
 return {
   'mfussenegger/nvim-dap',
+  dependencies = {
+    -- Installs the debug adapters via Mason and registers the matching
+    -- `dap.adapters.*` entries for us, so we don't hardcode binary paths.
+    'jay-babu/mason-nvim-dap.nvim',
+  },
   config = function()
     local dap = require 'dap'
 
-    -- Below is where we declare custom adapters for our debugger.
+    -- NOTE: Debug adapters are managed by mason-nvim-dap.
     --
-    -- Refer to https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation for various debuggers.
-
-    -- NOTE: C/C++/Rust Adapter
-    dap.adapters.codelldb = {
-      type = 'server',
-      port = '${port}',
-      executable = {
-        -- Path to codelldb (expanded from ~)
-        command = vim.fn.expand '~/.local/share/nvim/mason/bin/codelldb',
-        args = { '--port', '${port}' },
-
-        -- On windows you may have to uncomment this:
-        -- detached = false,
-      },
-    }
-    -- NOTE: GoLang Delve Adapter
-    dap.adapters.delve = {
-      type = 'server',
-      port = '${port}',
-      executable = {
-        command = 'dlv',
-        args = { 'dap', '-l', '127.0.0.1:${port}' },
-        -- add this if on windows, otherwise server won't open successfully
-        -- detached = false
-      },
+    -- `codelldb` covers C/C++/Rust/Swift/Zig and `delve` covers Go. It installs
+    -- the Mason packages and wires up `dap.adapters.codelldb` / `dap.adapters.delve`
+    -- using the adapter binaries from `mason/bin/`, so there is no hardcoded path
+    -- that can point at a missing binary.
+    --
+    -- `handlers = {}` is REQUIRED: mason-nvim-dap's default `handlers` setting is
+    -- `nil`, and its built-in adapter handler only runs when a truthy table is
+    -- passed. Omitting it (or setting it to `nil`) leaves adapters unconfigured.
+    require('mason-nvim-dap').setup {
+      ensure_installed = { 'codelldb', 'delve' },
+      automatic_installation = false, -- keep to the adapters listed above
+      handlers = {},
     }
 
     -- Below is where we declare custom configurations for our debugger.
     -- This is where we specify the program to debug, the working directory, etc.
     -- You can have multiple configurations for different types of debugging.
     -- For example, you could have a configuration for debugging a server, and another for debugging a client.
-    -- Most debugger config options are consuming avaiable adapters above.
+    -- Most debugger config options consume the adapters registered by mason-nvim-dap.
 
     -- NOTE: C/C++ Configuration
     dap.configurations.cpp = {

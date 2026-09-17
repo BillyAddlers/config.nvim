@@ -14,3 +14,5 @@ This is just my personal note to improve this Neovim Configurations, don't mind 
 - [x] Integrating basic Harpoon controls to Bufferline and Telescope UI
 - [x] Addressing deprecated functions for Neovim 0.12
 - [ ] Migrating to Neovim builtin treesitter
+- [ ] Removing local patch of nvim-silicon once the fix goes upstream
+- [ ] Keybind consistency (whether using which-key or lazy-key)

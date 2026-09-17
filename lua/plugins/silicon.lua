@@ -5,6 +5,14 @@ return {
   'michaelrommel/nvim-silicon',
   lazy = true,
   cmd = 'Silicon',
+  -- PINNED: `pin = true` keeps `:Lazy update` from checking out a newer commit,
+  -- which would revert the local `vim.validate` deprecation fix applied in
+  -- `~/.local/share/nvim/lazy/nvim-silicon/lua/nvim-silicon/init.lua`.
+  -- `commit` makes a fresh install land on this exact revision.
+  -- Remove both once upstream ships the fix, then `:Lazy update`.
+  -- Upstream: https://github.com/michaelrommel/nvim-silicon
+  commit = '7f66bda8f60c97a5bf4b37e5b8acb0e829ae3c32',
+  pin = true,
   -- Setting a custom keymap for Silicon.
   init = function()
     local keymap = require 'which-key'

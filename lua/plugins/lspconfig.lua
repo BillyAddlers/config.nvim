@@ -6,7 +6,8 @@ return {
     { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
     'williamboman/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-    { 'jay-babu/mason-nvim-dap.nvim', event = 'VeryLazy' },
+    -- NOTE: `mason-nvim-dap.nvim` is a dependency of `plugins.dap` instead, so it
+    -- installs & registers the debug adapters next to the nvim-dap configuration.
 
     -- Useful status updates for LSP.
     -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -142,6 +143,14 @@ return {
     --  So, we create new capabilities with nvim cmp, and then broadcast that to the servers.
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
+
+    -- Advertise `workspace.fileOperations` capabilities so LSP servers respond to
+    -- the create/rename/delete notifications emitted by nvim-lsp-file-operations.
+    -- `pcall` keeps startup working on the very first run, before the plugin is installed.
+    local ok, file_ops = pcall(require, 'lsp-file-operations')
+    if ok then
+      capabilities = vim.tbl_deep_extend('force', capabilities, file_ops.default_capabilities())
+    end
 
     -- Enable the following language servers
     --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.

@@ -11,7 +11,6 @@ return {
     'nvim-lua/plenary.nvim',
     'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
     'MunifTanjim/nui.nvim',
-    '3rd/image.nvim',
   },
   cmd = 'Neotree',
   keys = {
@@ -27,7 +26,6 @@ return {
   end,
   opts = {
     open_files_do_not_replace_types = { 'terminal', 'Trouble', 'qf', 'edgy' },
-    use_image_preview = true,
     close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab
     enable_git_status = true, -- Enable git status for files
     sources = { 'filesystem', 'buffers', 'git_status', 'document_symbols' },
@@ -61,14 +59,9 @@ return {
       },
     },
     commands = {
-      -- NOTE: Uncomment this if you're using image_preview.nvim for image preview.
-      --
-      -- image_wezterm = function(state)
-      --   local node = state.tree:get_node()
-      --   if node.type == 'file' then
-      --     require('image_preview').PreviewImage(node.path)
-      --   end
-      -- end,
+      -- NOTE: In-tree image preview was removed together with `image.nvim`.
+      -- snacks.nvim's image module does not integrate with Neo-tree; open the
+      -- image file directly (or use `Snacks.image.hover()`) to preview it.
     },
     window = {
       position = 'float',
@@ -88,10 +81,9 @@ return {
         },
       },
       mappings = {
-        -- NOTE: REFER TO THIS TWO LINES BELOW FOR IMAGE PREVIEW MAPPINGS
-        -- Uncomment one of them to use image preview (or just simply use both, it's up to you)
-        ['P'] = { 'toggle_preview', config = { use_float = true, use_image_nvim = true, use_image_preview = true } },
-        -- ['I'] = 'image_wezterm',
+        -- NOTE: `P` toggles Neo-tree's (text) preview. The old `use_image_nvim`
+        -- / `use_image_preview` flags are gone along with image.nvim.
+        ['P'] = { 'toggle_preview', config = { use_float = true } },
         --
         -- These lines below are standard mappings for neo-tree
         -- Feel free to add more.

@@ -200,17 +200,6 @@ vim.opt.rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
--- [[ Configure and install plugins ]]
---
---  To check the current status of your plugins, run
---    :Lazy
---
---  You can press `?` in this menu for help. Use `:q` to close the window
---
---  To update plugins you can run
---    :Lazy update
---
--- NOTE: Here is where you install your plugins.
 --
 --  Every plugin is modularized into its own file under `lua/plugins/`,
 --  imported below with `{ import = 'plugins.<name>' }`. Each file returns
@@ -222,9 +211,13 @@ vim.opt.rtp:prepend(lazypath)
 --    2. Add a matching `{ import = 'plugins.<name>' }` line to the list below.
 require('lazy').setup({
   { import = 'plugins.startuptime' },
+  { import = 'plugins.snacks-nvim' },
   { import = 'plugins.sleuth' },
   { import = 'plugins.gitsigns' },
-  { import = 'plugins.copilot' },
+  -- NOTE: Copilot is disabled by default (requires a paid GitHub Copilot
+  --       subscription and a Copilot license).
+  --       Uncomment these two lines and run `:Lazy install` to enable them.
+  -- { import = 'plugins.copilot' },
   -- { import = 'plugins.copilot-chat' },
   { import = 'plugins.obsidian' },
   { import = 'plugins.silicon' },
@@ -236,9 +229,8 @@ require('lazy').setup({
   { import = 'plugins.lualine' },
   { import = 'plugins.mini-bufremove' },
   { import = 'plugins.harpoon' },
-  -- { import = 'plugins.nvim-tree' },
-  { import = 'plugins.image' },
   { import = 'plugins.neo-tree' },
+  { import = 'plugins.nvim-lsp-file-operations' },
   { import = 'plugins.aerial' },
   { import = 'plugins.comment' },
   { import = 'plugins.lazygit' },
@@ -248,7 +240,6 @@ require('lazy').setup({
   { import = 'plugins.which-key' },
   { import = 'plugins.notify' },
   { import = 'plugins.noice' },
-  { import = 'plugins.dashboard' },
   { import = 'plugins.refactoring' },
   { import = 'plugins.neorg' },
   { import = 'plugins.telescope' },
@@ -259,14 +250,16 @@ require('lazy').setup({
   { import = 'plugins.dap-ui' },
   { import = 'plugins.conform' },
   { import = 'plugins.cmp' },
-  { import = 'plugins.transparent' },
-  { import = 'plugins.thorn' },
-  { import = 'plugins.catppuccin' },
+  -- NOTE: Theme-testing plugins kept for experimentation. All disabled by default.
+  --       Uncomment the line(s) below and run `:Lazy install` to try them out.
+  -- { import = 'plugins.transparent' }, -- Transparent background
+  -- { import = 'plugins.thorn' }, -- Different theme testing
+  -- { import = 'plugins.catppuccin' }, -- Different colorscheme testing
   { import = 'plugins.todo-comments' },
   { import = 'plugins.mini' },
   { import = 'plugins.mdx' },
   { import = 'plugins.treesitter' },
-  -- Integration with Noctalia's matugen via base16.
+  -- NOTE: Integration with Noctalia's matugen via base16.
   -- Compatible with V5's community template.
   --
   { import = 'plugins.base16' },

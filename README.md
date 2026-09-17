@@ -57,6 +57,50 @@ External Requirements:
   - `cargo install silicon`
     > **NOTE** > For Arch/Cachy, just install from pacman with `sudo pacman -S silicon`
 
+### Pinned / Patched Plugins
+
+Some plugins are pinned to an exact commit so that a local fix is not reverted by
+`:Lazy update` — or by `:Lazy install`, which runs a `git checkout` and would
+otherwise discard the patch. Adding `pin = true` makes lazy.nvim skip its
+`git.checkout` step for that plugin, so the working-tree patch survives.
+
+| Plugin                                                        | Pinned revision                                                 | Reason                                                                                                                                         | Unpin      |
+| :------------------------------------------------------------ | :-------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :--------- |
+| [nvim-silicon](https://github.com/michaelrommel/nvim-silicon) | `7f66bda8f60c97a5bf4b37e5b8acb0e829ae3c32` (`main`, 2025-01-09) | Local fix for a deprecated `vim.validate` call (the table form is removed in Neovim 1.0). Without the pin, `:Lazy update` checks the fix away. | See below. |
+
+The pin lives in [`lua/plugins/silicon.lua`](lua/plugins/silicon.lua):
+
+```lua
+commit = '7f66bda8f60c97a5bf4b37e5b8acb0e829ae3c32',
+pin = true,
+```
+
+#### Unpinning a plugin
+
+Do this once upstream ships the fix (or the deprecation warning is no longer needed):
+
+1. Remove the `commit` and `pin` lines from `lua/plugins/silicon.lua`.
+2. Discard the local patch so the next checkout is clean:
+   ```sh
+   git -C ~/.local/share/nvim/lazy/nvim-silicon checkout .
+   ```
+3. Update the plugin:
+   ```
+   :Lazy update nvim-silicon
+   ```
+
+#### The local patch
+
+Applied in `~/.local/share/nvim/lazy/nvim-silicon/lua/nvim-silicon/init.lua`
+(working-tree only — reapply if the plugin is ever re-cloned):
+
+```diff
+-	vim.validate({
+-		opts = { opts, "table" }
+-	})
++	vim.validate("opts", opts, "table")
+```
+
 > **NOTE**
 > See [Install Recipes](#Install-Recipes) for additional Windows and Linux specific notes
 > and quick install snippets
@@ -132,40 +176,6 @@ current plugin status. Hit `q` to close the window.
 Read through the `init.lua` file in your configuration folder for more
 information about extending and exploring Neovim. That also includes
 examples of adding popularly requested plugins.
-
-### Getting Started
-
-[The Only Video You Need to Get Started with Neovim](https://youtu.be/m8C0Cq9Uv9o)
-
-### FAQ
-
-- What should I do if I already have a pre-existing neovim configuration?
-  - You should back it up and then delete all associated files.
-  - This includes your existing init.lua and the neovim files in `~/.local`
-    which can be deleted with `rm -rf ~/.local/share/nvim/`
-- Can I keep my existing configuration in parallel to kickstart?
-  - Yes! You can use [NVIM_APPNAME](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)`=nvim-NAME`
-    to maintain multiple configurations. For example, you can install the kickstart
-    configuration in `~/.config/nvim-kickstart` and create an alias:
-    ```
-    alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
-    ```
-    When you run Neovim using `nvim-kickstart` alias it will use the alternative
-    config directory and the matching local directory
-    `~/.local/share/nvim-kickstart`. You can apply this approach to any Neovim
-    distribution that you would like to try out.
-- What if I want to "uninstall" this configuration:
-  - See [lazy.nvim uninstall](https://github.com/folke/lazy.nvim#-uninstalling) information
-- Why is the kickstart `init.lua` a single file? Wouldn't it make sense to split it into multiple files?
-  - The main purpose of kickstart is to serve as a teaching tool and a reference
-    configuration that someone can easily use to `git clone` as a basis for their own.
-    As you progress in learning Neovim and Lua, you might consider splitting `init.lua`
-    into smaller parts. A fork of kickstart that does this while maintaining the
-    same functionality is available here:
-    - [kickstart-modular.nvim](https://github.com/dam9000/kickstart-modular.nvim)
-  - Discussions on this topic can be found here:
-    - [Restructure the configuration](https://github.com/nvim-lua/kickstart.nvim/issues/218)
-    - [Reorganize init.lua into a multi-file setup](https://github.com/nvim-lua/kickstart.nvim/pull/473)
 
 ### Install Recipes
 
