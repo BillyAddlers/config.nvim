@@ -12,8 +12,8 @@
 
 A customizable personal Neovim config that is:
 
-- Small
-- Single-file
+- Robust
+- Modular
 - Completely Documented
 
 <p align="center">
@@ -26,7 +26,7 @@ A customizable personal Neovim config that is:
 
 ### Install Neovim
 
-Kickstart.nvim targets _only_ the latest
+This project is based off [Kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim), which as you may know _only_ targets the latest
 ['stable'](https://github.com/neovim/neovim/releases/tag/stable) and latest
 ['nightly'](https://github.com/neovim/neovim/releases/tag/nightly) of Neovim.
 If you are experiencing issues, please make sure you have the latest versions.
@@ -61,7 +61,7 @@ External Requirements:
 > See [Install Recipes](#Install-Recipes) for additional Windows and Linux specific notes
 > and quick install snippets
 
-### Install Kickstart
+### Install config.nvim
 
 > **NOTE** > [Backup](#FAQ) your previous configuration (if any exists)
 
@@ -75,23 +75,24 @@ Neovim's configurations are located under the following paths, depending on your
 
 #### \*Extra Step
 
-If you're planning to build your own Neovim config, [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repo
+If you're planning to build your own Neovim config, either [Fork](https://docs.github.com/en/get-started/quickstart/fork-a-repo) this repo
+or the repo this project based off, which is [Kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
 so that you have your own copy that you can modify, then install by cloning the
 fork to your machine using one of the commands below, depending on your OS.
 
 > **NOTE**
 > Your fork's url will be something like this:
-> `https://github.com/<your_github_username>/kickstart.nvim.git`
+> `https://github.com/<your_github_username>/config.nvim.git`
 
 You likely want to remove `lazy-lock.json` from your fork's `.gitignore` file
-too - it's ignored in the kickstart repo to make maintenance easier, but it's
+too - it's ignored in this repo to make maintenance easier, but it's
 [recommmended to track it in version control](https://lazy.folke.io/usage/lockfile).
 
-#### Clone kickstart.nvim
+#### Clone config.nvim
 
 > **NOTE**
 > If following the recommended step above (i.e., forking the repo), replace
-> `nvim-lua` with `<your_github_username>` in the commands below
+> the username with `<your_github_username>` in the commands below
 
 <details><summary> Linux and Mac </summary>
 

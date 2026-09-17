@@ -221,17 +221,6 @@ vim.opt.rtp:prepend(lazypath)
 --       (see `:help lazy.nvim-structuring-your-plugins`).
 --    2. Add a matching `{ import = 'plugins.<name>' }` line to the list below.
 require('lazy').setup({
-  -- NOTE: Loading the icon plugins early to prevent any issues with icons.
-  -- Most plugins below this will uses icons a lot.
-  -- {
-  --   'yamatsum/nvim-nonicons',
-  --   lazy = false,
-  --   dependencies = { 'nvim-tree/nvim-web-devicons' },
-  --   config = function()
-  --     require('nvim-nonicons').setup()
-  --   end,
-  -- },
-
   { import = 'plugins.startuptime' },
   { import = 'plugins.sleuth' },
   { import = 'plugins.gitsigns' },
@@ -277,22 +266,6 @@ require('lazy').setup({
   { import = 'plugins.mini' },
   { import = 'plugins.mdx' },
   { import = 'plugins.treesitter' },
-
-  -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins.
-  --
-  --  The `lua/kickstart/plugins/` directory still ships the original Kickstart
-  --  examples (debug, indent_line, lint, autopairs, neo-tree, gitsigns). Most of
-  --  them have been superseded by the modular configs in `lua/plugins/`, but they
-  --  are kept as reference. See `:help lazy.nvim-structuring-your-plugins` for
-  --  how to add your own.
-  --
-  -- NOTE: The import below can automatically add your own plugins, configuration etc from `lua/custom/plugins/*.lua`
-  --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
-
   -- Integration with Noctalia's matugen via base16.
   -- Compatible with V5's community template.
   --
