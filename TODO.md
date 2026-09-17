@@ -12,3 +12,5 @@ This is just my personal note to improve this Neovim Configurations, don't mind 
 - [x] Adding autoclosing tags for HTML, JSX, TSX, etc.
 - [x] Migrating to Bufferline for displaying Harpoon buffers
 - [x] Integrating basic Harpoon controls to Bufferline and Telescope UI
+- [x] Addressing deprecated functions for Neovim 0.12
+- [ ] Migrating to Neovim builtin treesitter
