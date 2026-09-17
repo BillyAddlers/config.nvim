@@ -3,7 +3,7 @@
 return {
   'nvim-neorg/neorg',
   build = ':Neorg sync-parsers',
-  dependencies = { 'nvim-lua/plenary.nvim' },
+  dependencies = { 'nvim-lua/plenary.nvim', 'nvim-neorg/tree-sitter-norg' },
   config = function()
     require('neorg').setup {
       load = {
