@@ -14,8 +14,7 @@ return {
   },
   cmd = 'Neotree',
   keys = {
-    mode = { 'n' },
-    { '<leader>e', '<cmd>Neotree toggle <CR>', desc = 'Open File [E]xplorer' },
+    { '<leader>e', '<cmd>Neotree toggle <CR>', desc = 'Open File [E]xplorer', mode = 'n' },
   },
   init = function()
     -- If you want icons for diagnostic errors, you'll need to define them somewhere:

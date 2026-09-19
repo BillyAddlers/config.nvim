@@ -14,7 +14,7 @@
 --  config = function() ... end
 return { -- Useful plugin to show you pending keybinds.
   'folke/which-key.nvim',
-  event = 'VeryLazy', -- Sets the loading event to 'VimEnter'
+  event = 'VeryLazy',
   opts = {
     icons = {
       -- set icon mappings to true if you have a Nerd Font
@@ -57,11 +57,11 @@ return { -- Useful plugin to show you pending keybinds.
     spec = {
       { '<leader>c', group = '[C]ode and Debuggers', mode = { 'n', 'x' } },
       { '<leader>d', group = '[D]ocument' },
-      { '<leader>r', group = '[R]ename' },
-      { '<leader>s', group = '[S]earch' },
+      { '<leader>r', group = '[R]ename or [R]efactor' },
+      { '<leader>s', group = '[S]earch', mode = { 'n' } },
+      { '<leader>s', group = '[S]ilicon', mode = { 'v' } },
       { '<leader>w', group = '[W]orkspace' },
       { '<leader>t', group = '[T]oggle' },
-      { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
     },
   },
 }

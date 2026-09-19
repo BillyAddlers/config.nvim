@@ -75,7 +75,6 @@ return { -- Fuzzy Finder (files, lsp, etc)
     -- NOTE: Configuring Harpoon2 integration to Telescope UI
     -- This allows us to quickly navigate between files in our project.
     local harpoon = require 'harpoon'
-    local keymap = require 'which-key'
     local conf = require('telescope.config').values
     local actions = require 'telescope.actions'
     local action_state = require 'telescope.actions.state'
@@ -133,16 +132,9 @@ return { -- Fuzzy Finder (files, lsp, etc)
         :find()
     end
 
-    keymap.add {
-      mode = { 'n', 'v' },
-      {
-        '<leader>H',
-        function()
-          toggle_telescope(harpoon:list())
-        end,
-        desc = '[H]arpoon Fles',
-      },
-    }
+    vim.keymap.set({ 'n', 'v' }, '<leader>H', function()
+      toggle_telescope(harpoon:list())
+    end, { desc = '[H]arpoon Files' })
     -- Enable Telescope extensions if they are installed
     pcall(require('telescope').load_extension, 'fzf')
     pcall(require('telescope').load_extension, 'ui-select')
@@ -169,23 +161,9 @@ return { -- Fuzzy Finder (files, lsp, etc)
     -- This is used to map for Personal Notes directory.
     -- Kinda useful if you're looking for something like Inkdrop/Notion but don't wanna use 3rd party services.
     -- Recommended to install 'iamcco/markdown-preview.nvim' as well to render Markdown notes.
-    -- NOTE: This is for a personal notes directory.
-    -- WARN: Note-taking activities are moved to Neorg, please refer to that plugin using search feature.
-    -- More info on 'nvim-neorg/neorg' repository.
     -- Deprecated in favor of Obsidian with [obsidian-nvim/obsidian.nvim](https://github.com/obsidian-nvim/obsidian.nvim)
-    -- keymap.add {
-    --   mode = { 'n' },
-    --   {
-    --     '<leader>sq',
-    --     function()
-    --       builtin.find_files {
-    --         cwd = '~/.notes',
-    --       }
-    --     end,
-    --     desc = '[S]earch for Personal Notes, [Q]',
-    --   },
-    -- }
-
+    --
+    --
     -- Slightly advanced example of overriding default behavior and theme
     vim.keymap.set('n', '<leader>/', function()
       -- You can pass additional configuration to Telescope to change the theme, layout, etc.

@@ -33,29 +33,43 @@ If you are experiencing issues, please make sure you have the latest versions.
 
 ### Install External Dependencies
 
-External Requirements:
+Basic Requirements:
 
 - Basic utils: `git`, `make`, `unzip`, C Compiler (`gcc`)
-- [ripgrep](https://github.com/BurntSushi/ripgrep#installation)
-- Clipboard tool (xclip/xsel/win32yank or other depending on platform)
+  - Needed to build native plugins (LuaSnip regexp support, `telescope-fzf-native`)
+- [ripgrep](https://github.com/BurntSushi/ripgrep#installation) — for Telescope's live grep (`<leader>sg`)
+- Clipboard tool (xclip/xsel/win32yank or other depending on platform) — for `clipboard = 'unnamedplus'`
 - A [Nerd Font](https://www.nerdfonts.com/): optional, provides various icons
   - if you have it set `vim.g.have_nerd_font` in `init.lua` to true
-- An [ImageMagick](https://github.com/ImageMagick/ImageMagick) installation for image preview in Nvim. For `magick` binding, it will be handled by [this](https://github.com/kiyoon/magick.nvim) plugin so we don't have to install luarocks by ourselves.
-  - Ubuntu: `sudo apt install libmagickwand-dev`
-  - MacOS: `brew install imagemagick`
-    - By default, brew installs into a weird location, so you have to add `$(brew --prefix)/lib` to
-      `DYLD_LIBRARY_PATH` by adding something like
-      `export DYLD_LIBRARY_PATH="$(brew --prefix)/lib:$DYLD_LIBRARY_PATH"`
-      to your shell profile (probably `.zshrc` or `.bashrc`)
-  - Fedora: `sudo dnf install ImageMagick-devel`
-  - Arch: `sudo pacman -Syu imagemagick`
-- Language Setup:
-  - If you want to write Typescript, you need `npm`
-  - If you want to write Golang, you will need `go`
-  - etc.
-- [Silicon](https://github.com/Aloxaf/silicon) to generate a beautiful image of your code. Go to `nvim-silicon` using find feature and change the configuration accordingly! (NOTE: It contains my personal font and watermark, so don't forget to change!)
+
+Language Setup:
+
+- If you want to write Typescript, you need `npm` (`ts_ls`, `eslint`, `tailwindcss`, `prettier`, `mdx_analyzer`, …)
+- If you want to write Golang, you will need `go` (`gopls`, `gofumpt`, `goimports`, `gofmt`)
+- If you want to write Python, you will need `python` (`pyright`)
+- etc.
+
+Optional / Feature-gated:
+
+- [ImageMagick](https://imagemagick.org) (`magick` CLI) — image/PDF/SVG preview in Markdown via `snacks.image`. Without it only PNGs are displayed. LaTeX math additionally needs `tectonic` or `pdflatex`; Mermaid diagrams need `mmdc`.
+  - Ubuntu: `sudo apt install imagemagick`
+  - Fedora: `sudo dnf install ImageMagick`
+  - Arch: `sudo pacman -S imagemagick`
+  - macOS: `brew install imagemagick`
+- [Silicon](https://github.com/Aloxaf/silicon) — beautiful code screenshots
   - `cargo install silicon`
     > **NOTE** > For Arch/Cachy, just install from pacman with `sudo pacman -S silicon`
+  - It contains my personal font and watermark (see `lua/plugins/silicon.lua`), so don't forget to change them!
+- [lazygit](https://github.com/jesseduffield/lazygit) — visual Git UI (`<leader>g`)
+- `tmux` — seamless tmux pane / Neovim split navigation
+- [`tree-sitter` CLI](https://github.com/tree-sitter/tree-sitter) + C compiler — building parsers for nvim-treesitter (`:TSUpdate`)
+- `hexokinase` binary — color previews next to hex codes (`make hexokinase` in the plugin directory)
+
+Installed automatically by [Mason](https://github.com/williamboman/mason.nvim) — no manual step:
+
+- LSP servers: `clangd`, `gopls`, `rust_analyzer`, `pyright`, `ts_ls`, `eslint`, `tailwindcss`, `html`, `angularls`, `vue_ls`, `svelte`, `mdx_analyzer`, `marksman`, `dockerls`, `docker_compose_language_service`, `arduino_language_server`, `roslyn_ls`, `lua_ls` — plus `stylua`
+- Debug adapters: `codelldb` (C/C++/Rust/Zig) and `delve` (Go), via `mason-nvim-dap`
+- Conform / none-ls formatters (`gofumpt`, `goimports`, `gofmt`, `clang-format`, `prettier`, `markdownlint-cli2`, `markdown-toc`) are **not** managed by Mason — they must be on your `PATH`
 
 ### Pinned / Patched Plugins
 
@@ -177,11 +191,13 @@ Read through the `init.lua` file in your configuration folder for more
 information about extending and exploring Neovim. That also includes
 examples of adding popularly requested plugins.
 
+Also, feel free to check half-heartedly documented Cheatsheet [here.](./doc/cheatsheet.md)
+
 ### Install Recipes
 
 Below you can find OS specific install instructions for Neovim and dependencies.
 
-After installing all the dependencies continue with the [Install Kickstart](#Install-Kickstart) step.
+After installing all the dependencies continue with the [Install config.nvim](#install-config.nvim) step.
 
 #### Windows Installation
 

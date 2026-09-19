@@ -13,36 +13,34 @@ return {
   -- Upstream: https://github.com/michaelrommel/nvim-silicon
   commit = '7f66bda8f60c97a5bf4b37e5b8acb0e829ae3c32',
   pin = true,
-  -- Setting a custom keymap for Silicon.
-  init = function()
-    local keymap = require 'which-key'
-    local silicon = require 'nvim-silicon'
-    keymap.add {
-      mode = { 'v' },
-      { '<leader>s', group = 'Silicon' },
-      {
-        '<leader>sc',
-        function()
-          silicon.clip()
-        end,
-        desc = 'Copy [S]ilicon render to [c]lipboard',
-      },
-      {
-        '<leader>sf',
-        function()
-          silicon.file()
-        end,
-        desc = 'Save [S]ilicon render to [f]ile',
-      },
-      {
-        '<leader>ss',
-        function()
-          silicon.shoot()
-        end,
-        desc = 'Take a [S]ilicon [s]creenshot',
-      },
-    }
-  end,
+  -- Setting custom keymaps for Silicon. Declared with `keys` so the plugin is
+  -- only loaded once one of them is pressed.
+  keys = {
+    {
+      '<leader>sc',
+      function()
+        require('nvim-silicon').clip()
+      end,
+      mode = 'v',
+      desc = 'Copy [S]ilicon render to [c]lipboard',
+    },
+    {
+      '<leader>sf',
+      function()
+        require('nvim-silicon').file()
+      end,
+      mode = 'v',
+      desc = 'Save [S]ilicon render to [f]ile',
+    },
+    {
+      '<leader>ss',
+      function()
+        require('nvim-silicon').shoot()
+      end,
+      mode = 'v',
+      desc = 'Take a [S]ilicon [s]creenshot',
+    },
+  },
 
   -- Setting up Silicon with some custom configuration.
   -- Randomized color from the custom function defined above.
@@ -50,7 +48,7 @@ return {
     require('nvim-silicon').setup {
       no_line_number = true,
 
-      -- Font used in my WezTerm.
+      -- Font used.
       -- Feel free to change the fonts accordingly.
       font = 'JetBrainsMono Nerd Font',
       -- Theme used in Silicon rendering.

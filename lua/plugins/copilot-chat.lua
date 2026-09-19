@@ -1,14 +1,9 @@
 return {
   'CopilotC-Nvim/CopilotChat.nvim', -- Copilot Chat
   branch = 'canary',
-  init = function()
-    local copilot = require 'CopilotChat'
-    local keymap = require 'which-key'
-    keymap.add {
-      mode = { 'n', 'v' },
-      { '<leader>cc', '<cmd>CopilotChatToggle <CR>', desc = 'Copilot Chat' },
-    }
-  end,
+  keys = {
+    { '<leader>cc', '<cmd>CopilotChatToggle <CR>', desc = 'Copilot Chat', mode = { 'n', 'v' } },
+  },
   dependencies = {
     'github/copilot.vim',
     'nvim-lua/plenary.nvim', -- for curl, log wrapper

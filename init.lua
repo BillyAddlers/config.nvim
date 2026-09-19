@@ -16,10 +16,6 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.go_fmt_command = 'gofumpt'
 vim.g.go_auto_type_info = 1
 
--- Autoformat on save
--- Using 'conform' for autoformatting code.
--- vim.cmd [[autocmd BufWritePre *.go,*.ts,*.tsx lua vim.lsp.buf.format({async = true})]]
-
 -- Disable border highlights background for Neotree
 -- Force floating windows to have a transparent background
 vim.api.nvim_set_hl(0, 'NormalFloat', { bg = 'NONE', ctermbg = 'NONE' })
