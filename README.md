@@ -56,13 +56,19 @@ Optional / Feature-gated:
   - Fedora: `sudo dnf install ImageMagick`
   - Arch: `sudo pacman -S imagemagick`
   - macOS: `brew install imagemagick`
+- [`tree-sitter` CLI](https://github.com/tree-sitter/tree-sitter) + C compiler — building parsers for nvim-treesitter (`:TSUpdate`)
+  - Ubuntu/Debian (24.04+): `sudo apt install tree-sitter-cli`
+  - Fedora: `sudo dnf install tree-sitter-cli`
+  - Arch: `sudo pacman -S tree-sitter`
+  - macOS: `brew install tree-sitter`
+  - Fallback: `npm install -g tree-sitter-cli` or `cargo install tree-sitter-cli`
 - [Silicon](https://github.com/Aloxaf/silicon) — beautiful code screenshots
   - `cargo install silicon`
     > **NOTE** > For Arch/Cachy, just install from pacman with `sudo pacman -S silicon`
   - It contains my personal font and watermark (see `lua/plugins/silicon.lua`), so don't forget to change them!
 - [lazygit](https://github.com/jesseduffield/lazygit) — visual Git UI (`<leader>g`)
+  - `sudo npm install -g lazygit`
 - `tmux` — seamless tmux pane / Neovim split navigation
-- [`tree-sitter` CLI](https://github.com/tree-sitter/tree-sitter) + C compiler — building parsers for nvim-treesitter (`:TSUpdate`)
 - `hexokinase` binary — color previews next to hex codes (`make hexokinase` in the plugin directory)
 
 Installed automatically by [Mason](https://github.com/williamboman/mason.nvim) — no manual step:
