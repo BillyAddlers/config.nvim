@@ -6,6 +6,7 @@
 -- It's a powerful tool that can help you find and fix bugs in your code.
 return {
   'mfussenegger/nvim-dap',
+  event = 'VeryLazy',
   dependencies = {
     -- Installs the debug adapters via Mason and registers the matching
     -- `dap.adapters.*` entries for us, so we don't hardcode binary paths.

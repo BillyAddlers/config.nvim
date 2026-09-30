@@ -2,9 +2,18 @@
 return {
   'neovim/nvim-lspconfig',
   dependencies = {
-    -- Automatically install LSPs and related tools to stdpath for Neovim
-    { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
-    'williamboman/mason-lspconfig.nvim',
+    -- Automatically install LSPs and related tools to stdpath for Neovim.
+    -- Mason must be loaded before its dependents.
+    {
+      'mason-org/mason.nvim',
+      opts = {
+        registries = {
+          'github:mason-org/mason-registry',
+          'github:Crashdummyy/mason-registry',
+        },
+      },
+    },
+    'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     -- NOTE: `mason-nvim-dap.nvim` is a dependency of `plugins.dap` instead, so it
     -- installs & registers the debug adapters next to the nvim-dap configuration.
@@ -102,7 +111,7 @@ return {
         --
         -- When you move your cursor, the highlights will be cleared (the second autocommand).
         local client = vim.lsp.get_client_by_id(event.data.client_id)
-        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, event.buf) then
           local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
           vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
             buffer = event.buf,
@@ -129,7 +138,7 @@ return {
         -- code, if the language server you are using supports them
         --
         -- This may be unwanted, since they displace some of your code
-        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+        if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
           map('<leader>th', function()
             vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
           end, '[T]oggle Inlay [H]ints')
@@ -250,17 +259,23 @@ return {
     --    :Mason
     --
     --  You can press `g?` for help in this menu.
-    require('mason').setup {
-      registries = {
-        'github:mason-org/mason-registry',
-        'github:Crashdummyy/mason-registry',
-      },
-    }
 
     -- You can add other tools here that you want Mason to install
     -- for you, so that they are available from within Neovim.
-    local ensure_installed = vim.tbl_keys(servers or {})
+    --
+    -- NOTE: `roslyn_ls` is an nvim-lspconfig name, not a Mason package name, so
+    -- mason-tool-installer asks mason-lspconfig to map it. That mapping points
+    -- at mason-org's `roslyn-language-server`, whose binary name collides with
+    -- the one the `roslyn` package from Crashdummyy's registry already linked
+    -- into `mason/bin`, which made every install fail with
+    -- "roslyn-language-server is already linked". Request `roslyn` directly and
+    -- keep `roslyn_ls` out of Mason's list. The LSP itself still starts
+    -- `roslyn-language-server`, which resolves through `mason/bin` as before.
+    local ensure_installed = vim.tbl_filter(function(name)
+      return name ~= 'roslyn_ls'
+    end, vim.tbl_keys(servers or {}))
     vim.list_extend(ensure_installed, {
+      'roslyn', -- C# language server (Crashdummyy's registry, see note above)
       'stylua', -- Used to format Lua code
     })
     require('mason-tool-installer').setup { ensure_installed = ensure_installed }

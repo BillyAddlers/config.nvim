@@ -16,13 +16,6 @@ return {
   keys = {
     { '<leader>e', '<cmd>Neotree toggle <CR>', desc = 'Open File [E]xplorer', mode = 'n' },
   },
-  init = function()
-    -- If you want icons for diagnostic errors, you'll need to define them somewhere:
-    vim.fn.sign_define('DiagnosticSignError', { text = ' ', texthl = 'DiagnosticSignError' })
-    vim.fn.sign_define('DiagnosticSignWarn', { text = ' ', texthl = 'DiagnosticSignWarn' })
-    vim.fn.sign_define('DiagnosticSignInfo', { text = ' ', texthl = 'DiagnosticSignInfo' })
-    vim.fn.sign_define('DiagnosticSignHint', { text = '󰌵', texthl = 'DiagnosticSignHint' })
-  end,
   opts = {
     open_files_do_not_replace_types = { 'terminal', 'Trouble', 'qf', 'edgy' },
     close_if_last_window = true, -- Close Neo-tree if it is the last window left in the tab

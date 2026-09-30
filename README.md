@@ -71,7 +71,7 @@ Optional / Feature-gated:
 - `tmux` — seamless tmux pane / Neovim split navigation
 - `hexokinase` binary — color previews next to hex codes (`make hexokinase` in the plugin directory)
 
-Installed automatically by [Mason](https://github.com/williamboman/mason.nvim) — no manual step:
+Installed automatically by [Mason](https://github.com/mason-org/mason.nvim) — no manual step:
 
 - LSP servers: `clangd`, `gopls`, `rust_analyzer`, `pyright`, `ts_ls`, `eslint`, `tailwindcss`, `html`, `angularls`, `vue_ls`, `svelte`, `mdx_analyzer`, `marksman`, `dockerls`, `docker_compose_language_service`, `arduino_language_server`, `roslyn_ls`, `lua_ls` — plus `stylua`
 - Debug adapters: `codelldb` (C/C++/Rust/Zig) and `delve` (Go), via `mason-nvim-dap`
