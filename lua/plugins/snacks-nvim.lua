@@ -34,10 +34,10 @@ return {
   config = function(_, opts)
     require('snacks').setup(opts)
 
-    -- WORKAROUNDS for folke/snacks.nvim#2918 (fix is still unmerged). Drop all
-    -- of these once it lands in a release.
+    -- WORKAROUNDS for folke/snacks.nvim. Drop each once the corresponding
+    -- upstream fix lands in a release.
 
-    local placement = require('snacks.image.placement')
+    local placement = require 'snacks.image.placement'
     local ns = placement.ns
     local uv = vim.uv or vim.loop
 
@@ -98,7 +98,7 @@ return {
     -- injection, so the same `<img>` node is matched by the images query in
     -- both trees. Dedup by source + start position: the two trees can report a
     -- different end position for the same node, but never a different start.
-    local doc = require('snacks.image.doc')
+    local doc = require 'snacks.image.doc'
     local find = doc.find
     doc.find = function(buf, cb, find_opts)
       return find(buf, function(matches)
@@ -112,6 +112,106 @@ return {
         end
         cb(deduped)
       end, find_opts)
+    end
+
+    -- 4. Images are cached by path alone: in memory (`images` keyed by file)
+    -- and on disk (`sha256(path)` conversion output, skipped when it already
+    -- exists). Replacing an image therefore keeps the stale pixels until
+    -- Neovim restarts. Give every content version its own path so all cache
+    -- layers miss. See folke/snacks.nvim#1394.
+    local cache = Snacks.image.config.cache
+    local refs = cache .. '/refs'
+    vim.fn.mkdir(refs, 'p')
+
+    local aliases = {} ---@type table<string, string>
+
+    ---@param src string
+    ---@return string
+    local function versioned(src)
+      -- keep `#page=N` out of the filesystem lookup
+      local path, page = src:match '^(.-)#page=(%d+)$'
+      path = path or src
+      page = page and ('#page=' .. page) or ''
+
+      local stat = uv.fs_stat(path)
+      if not stat or not stat.mtime then
+        return src
+      end
+
+      local key = ('%s-%d-%d-%d-%d-%d'):format(
+        vim.fn.sha256(path):sub(1, 12),
+        stat.mtime.sec,
+        stat.mtime.nsec or 0,
+        stat.ctime and stat.ctime.sec or 0,
+        stat.ctime and stat.ctime.nsec or 0,
+        stat.size
+      )
+      local alias = aliases[key]
+      if alias and uv.fs_stat(alias) then
+        return alias .. page
+      end
+
+      local ext = vim.fn.fnamemodify(path, ':e')
+      alias = refs .. '/' .. key .. (ext ~= '' and ('.' .. ext) or '')
+      if not uv.fs_stat(alias) and not uv.fs_symlink(path, alias) then
+        return src
+      end
+      aliases[key] = alias
+      return alias .. page
+    end
+
+    local doc_images = require 'snacks.image.doc'
+    local find_images = doc_images.find
+    doc_images.find = function(buf, cb, find_opts)
+      return find_images(buf, function(matches)
+        for _, match in ipairs(matches) do
+          if match.src then
+            match.src = versioned(match.src)
+          end
+        end
+        cb(matches)
+      end, find_opts)
+    end
+
+    -- An image replaced by another program while Neovim was unfocused never
+    -- triggers a refresh, so re-run the lookup when focus comes back.
+    local inline_by_buf = {} ---@type table<number, snacks.image.inline>
+    local inline = require 'snacks.image.inline'
+    local new_inline = inline.new
+    inline.new = function(buf)
+      local self = new_inline(buf)
+      inline_by_buf[buf] = self
+      return self
+    end
+
+    vim.api.nvim_create_autocmd('FocusGained', {
+      group = vim.api.nvim_create_augroup('snacks.image.focus', { clear = true }),
+      callback = function()
+        local inst = inline_by_buf[vim.api.nvim_get_current_buf()]
+        if inst then
+          inst:update()
+        end
+      end,
+    })
+
+    -- Versioned aliases and their conversions accumulate over time; drop
+    -- cache files that have not been touched in a month.
+    local cutoff = os.time() - 30 * 24 * 60 * 60
+    for _, dir in ipairs { cache, refs } do
+      local handle = uv.fs_scandir(dir)
+      while handle do
+        local name, kind = uv.fs_scandir_next(handle)
+        if not name then
+          break
+        end
+        if kind == 'file' or kind == 'link' then
+          local file = dir .. '/' .. name
+          local stat = uv.fs_lstat(file)
+          if stat and stat.mtime and stat.mtime.sec < cutoff then
+            pcall(vim.fs.rm, file)
+          end
+        end
+      end
     end
   end,
 }
