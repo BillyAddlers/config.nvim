@@ -133,6 +133,11 @@ return {
       path = path or src
       page = page and ('#page=' .. page) or ''
 
+      -- never alias an alias
+      if path:find(refs, 1, true) == 1 then
+        return src
+      end
+
       local stat = uv.fs_stat(path)
       if not stat or not stat.mtime then
         return src
@@ -173,8 +178,8 @@ return {
       end, find_opts)
     end
 
-    -- An image replaced by another program while Neovim was unfocused never
-    -- triggers a refresh, so re-run the lookup when focus comes back.
+    -- Track inline instances per buffer so a refocus can re-run the doc
+    -- image lookup.
     local inline_by_buf = {} ---@type table<number, snacks.image.inline>
     local inline = require 'snacks.image.inline'
     local new_inline = inline.new
@@ -184,13 +189,61 @@ return {
       return self
     end
 
+    -- 4b. Image buffers opened directly (`:edit`, neo-tree, picker previews)
+    -- go through `buf._attach` instead of `doc.find`, so version those sources
+    -- too. `supports()` is checked first: the fallback viewer renders the path
+    -- as text and has to keep showing the real file name.
+    local image_src = {} ---@type table<number, string>
+    local image_buf = require 'snacks.image.buf'
+    local buf_attach = image_buf._attach
+    image_buf._attach = function(buf, opts)
+      opts = opts or {}
+      local src = opts.src or vim.api.nvim_buf_get_name(buf)
+      if src ~= '' and Snacks.image.supports(src) then
+        opts.src = versioned(src)
+        image_src[buf] = opts.src
+      end
+      return buf_attach(buf, opts)
+    end
+
+    ---@param buf number
+    local function refresh_image_buf(buf)
+      local current = image_src[buf]
+      if not current or not vim.api.nvim_buf_is_valid(buf) or vim.bo[buf].filetype ~= 'image' then
+        return
+      end
+      local src = vim.api.nvim_buf_get_name(buf)
+      if src ~= '' and versioned(src) ~= current then
+        image_buf.attach(buf)
+      end
+    end
+
+    local group = vim.api.nvim_create_augroup('snacks.image.focus', { clear = true })
+    -- A file replaced by another program while Neovim was unfocused (or while
+    -- another buffer was active) never triggers a buffer event, so re-check
+    -- both kind of viewers when focus or buffer changes.
     vim.api.nvim_create_autocmd('FocusGained', {
-      group = vim.api.nvim_create_augroup('snacks.image.focus', { clear = true }),
+      group = group,
       callback = function()
-        local inst = inline_by_buf[vim.api.nvim_get_current_buf()]
+        local buf = vim.api.nvim_get_current_buf()
+        local inst = inline_by_buf[buf]
         if inst then
           inst:update()
         end
+        refresh_image_buf(buf)
+      end,
+    })
+    vim.api.nvim_create_autocmd('BufEnter', {
+      group = group,
+      callback = function()
+        refresh_image_buf(vim.api.nvim_get_current_buf())
+      end,
+    })
+    vim.api.nvim_create_autocmd({ 'BufWipeout', 'BufDelete' }, {
+      group = group,
+      callback = function(ev)
+        image_src[ev.buf] = nil
+        inline_by_buf[ev.buf] = nil
       end,
     })
 
